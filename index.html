@@ -3,28 +3,34 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ultimate Modern Site</title>
+  <title>Next Level Modern Site</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
   <style>
-    * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; scroll-behavior:smooth; }
 
     body { background:#0f172a; color:#fff; }
 
     header {
-      padding:20px 50px;
+      padding:15px 30px;
       display:flex;
       justify-content:space-between;
       align-items:center;
       background:rgba(255,255,255,0.05);
-      backdrop-filter:blur(10px);
+      backdrop-filter:blur(12px);
       position:sticky;
       top:0;
+      z-index:1000;
     }
 
     header h2 { color:#38bdf8; }
 
+    nav {
+      display:flex;
+      gap:20px;
+    }
+
     nav a {
-      margin-left:20px;
       text-decoration:none;
       color:#fff;
       transition:0.3s;
@@ -32,25 +38,36 @@
 
     nav a:hover { color:#38bdf8; }
 
-    section {
-      padding:80px 20px;
-      text-align:center;
+    .menu-btn {
+      display:none;
+      font-size:22px;
+      cursor:pointer;
     }
+
+    section { padding:90px 20px; text-align:center; }
 
     .hero {
       background:linear-gradient(135deg,#1e3a8a,#9333ea);
+      min-height:90vh;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+      animation:fadeIn 1s ease;
     }
 
-    .hero h1 { font-size:40px; margin-bottom:20px; }
+    .hero h1 { font-size:42px; margin-bottom:15px; }
+
+    .hero p { opacity:0.9; }
 
     .btn {
-      padding:12px 25px;
-      background:#38bdf8;
-      border-radius:25px;
+      padding:12px 28px;
+      background:linear-gradient(45deg,#38bdf8,#0ea5e9);
+      border-radius:30px;
       text-decoration:none;
       color:#000;
+      margin-top:25px;
       display:inline-block;
-      margin-top:20px;
       transition:0.3s;
     }
 
@@ -67,26 +84,69 @@
       background:rgba(255,255,255,0.05);
       padding:25px;
       border-radius:15px;
-      transition:0.3s;
+      transition:0.4s;
+      backdrop-filter:blur(10px);
     }
 
     .card:hover {
-      transform:translateY(-10px);
+      transform:translateY(-12px) scale(1.03);
       background:rgba(255,255,255,0.1);
     }
 
-    .footer {
+    .contact-box {
+      max-width:400px;
+      margin:auto;
+      display:flex;
+      flex-direction:column;
+      gap:15px;
+      margin-top:30px;
+    }
+
+    input, textarea {
+      padding:12px;
+      border:none;
+      border-radius:8px;
+      outline:none;
+    }
+
+    footer {
       padding:30px;
       text-align:center;
       background:#020617;
+      margin-top:40px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity:0; transform:translateY(20px);} 
+      to { opacity:1; transform:translateY(0);} 
+    }
+
+    /* Mobile */
+    @media(max-width:768px){
+      nav {
+        position:absolute;
+        top:60px;
+        right:0;
+        background:#020617;
+        flex-direction:column;
+        width:200px;
+        display:none;
+        padding:20px;
+      }
+
+      nav.active { display:flex; }
+
+      .menu-btn { display:block; }
     }
   </style>
 </head>
+
 <body>
 
 <header>
   <h2>MySite 🚀</h2>
-  <nav>
+  <div class="menu-btn" onclick="toggleMenu()">☰</div>
+  <nav id="nav">
     <a href="#">Home</a>
     <a href="#about">About</a>
     <a href="#services">Services</a>
@@ -95,47 +155,46 @@
 </header>
 
 <section class="hero">
-  <h1>Welcome to Modern Website 🔥</h1>
-  <p>Ab tumhara page ek professional landing page ban gaya hai 😎</p>
+  <h1>Next Level Website 🔥</h1>
+  <p>Ab tumhari site bilkul startup landing page jaisi lag rahi hai 😎</p>
   <a href="#services" class="btn">Explore</a>
 </section>
 
 <section id="about">
-  <h2>About Us</h2>
-  <p>Ye ek demo modern UI website hai jo tumne banayi hai. Ab tum beginner nahi rahe 😎</p>
+  <h2>About</h2>
+  <p>Modern UI, smooth animation aur responsive design — sab tumne bana liya 💪</p>
 </section>
 
 <section id="services">
-  <h2>Our Services</h2>
+  <h2>Services</h2>
   <div class="cards">
-    <div class="card">
-      <h3>Web Design</h3>
-      <p>Modern aur responsive UI design.</p>
-    </div>
-    <div class="card">
-      <h3>Development</h3>
-      <p>Fast aur scalable web apps.</p>
-    </div>
-    <div class="card">
-      <h3>Deployment</h3>
-      <p>Server aur cloud deployment support.</p>
-    </div>
+    <div class="card"><h3>UI Design</h3><p>Clean aur modern designs</p></div>
+    <div class="card"><h3>Development</h3><p>Fast & scalable apps</p></div>
+    <div class="card"><h3>Cloud</h3><p>Deployment & DevOps</p></div>
   </div>
 </section>
 
 <section id="contact">
   <h2>Contact</h2>
-  <p>Email: example@mail.com</p>
-  <a href="#" class="btn" onclick="contactMsg()">Say Hello</a>
+  <div class="contact-box">
+    <input type="text" placeholder="Your Name">
+    <input type="email" placeholder="Your Email">
+    <textarea rows="4" placeholder="Your Message"></textarea>
+    <button class="btn" onclick="sendMsg()">Send Message</button>
+  </div>
 </section>
 
-<div class="footer">
-  <p>© 2026 MySite | Made with ❤️</p>
-</div>
+<footer>
+  <p>© 2026 MySite | Built like a pro 🚀</p>
+</footer>
 
 <script>
-  function contactMsg() {
-    alert("🚀 Thanks for visiting!\nTumhari site mast ban rahi hai!");
+  function toggleMenu(){
+    document.getElementById('nav').classList.toggle('active');
+  }
+
+  function sendMsg(){
+    alert('🔥 Message sent successfully!');
   }
 </script>
 
