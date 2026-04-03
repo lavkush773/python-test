@@ -4,24 +4,24 @@
 
 This project provides an **automated, scalable, and production-ready solution** for GeoIP-based traffic control in HAProxy.
 
-It helps you:
+It allows you to:
 
-* Update the **GeoIP database (`geoip.map`) automatically**
+* Automatically update the **GeoIP database (`geoip.map`)**
 * Block traffic based on **domain + country**
 * Use **regex-based rules** for flexible geo-blocking
-* Run everything using **Bash + AWK only (no heavy dependencies)**
+* Run using **Bash + AWK only (no heavy dependencies)**
 
-This setup is specifically designed for **production environments** where **domain-level geo restrictions** are required.
+This setup is ideal for **production environments** where **domain-level geo restrictions** are required.
 
 ---
 
 ## 🚀 Features
 
-* **Automated GeoIP Updates** – Fetches and updates GeoLite2 database automatically
+* **Automated GeoIP Updates** – Fetch and update GeoLite2 database automatically
 * **Domain-Level Blocking** – Block countries per domain using regex
-* **Backup Support** – Automatically backs up old `geoip.map` before update
+* **Backup Support** – Backup old `geoip.map` before every update
 * **IPv4 Optimized** – High-performance CIDR processing
-* **Regex-Based Filtering** – Flexible and scalable blocking rules
+* **Regex-Based Filtering** – Flexible and scalable rules
 * **Lightweight** – No external libraries required
 * **Safe Reload** – Validates HAProxy config before reload
 
@@ -52,10 +52,10 @@ cd ~/geoip-updater
 ### 2️⃣ Create Update Script
 
 ```bash
-nano update_geoip.sh
+vim update_geoip.sh
 ```
 
-Paste your script inside and save it.
+Paste your script into this file and save it.
 
 ---
 
@@ -71,9 +71,48 @@ chmod +x update_geoip.sh
 
 To download the GeoLite2 database, you need a **MaxMind license key**.
 
-### ▶️ Create License Key
+---
 
-Follow this guide:
+### ▶️ Create Account (Signup)
+
+Signup here:
+https://www.maxmind.com/en/geolite2/signup?utm_source=kb&utm_medium=kb-link&utm_campaign=kb-create-account
+
+---
+
+### ⚙️ Generate License Key (Step-by-Step)
+
+#### **Step 1**
+
+* Login to your MaxMind account
+* Go to **Account → Manage License Keys**
+
+#### **Step 2**
+
+* Click on **"Generate New License Key"**
+* Add a **description (optional)**
+
+#### **Step 3**
+
+* Click **"Confirm"**
+
+✅ Your **license key will be generated**
+
+---
+
+### ⚠️ Important Notes
+
+* The license key is **shown only once** → make sure to **save it immediately**
+* You can either:
+
+  * Download **GeoIP.conf file**, OR
+  * Copy **Account ID + License Key manually**
+
+---
+
+### 🎥 Video Guide (Optional)
+
+If you don’t understand the steps, watch this video:
 https://www.youtube.com/watch?v=f8QsxwG8sLY
 
 ---
@@ -81,7 +120,7 @@ https://www.youtube.com/watch?v=f8QsxwG8sLY
 ### ⚙️ Configure in Script
 
 ```bash
-nano update_geoip.sh
+vim update_geoip.sh
 ```
 
 Add:
@@ -90,8 +129,6 @@ Add:
 ACCOUNT_ID="Your_Account_ID"
 LICENSE_KEY="Your_MaxMind_License_Key"
 ```
-
-These credentials allow the script to download the latest GeoLite2 database.
 
 ---
 
@@ -150,7 +187,7 @@ Example (runs every Wednesday & Saturday at 3:30 AM):
 ### 🔹 Step 1: Create Domain Block Map
 
 ```bash
-sudo nano /etc/haproxy/domain_block.map
+sudo vim /etc/haproxy/domain_block.map
 ```
 
 #### Format
@@ -205,7 +242,7 @@ sudo systemctl reload haproxy
 
 * HAProxy detects **country from client IP**
 * Combines **domain + country** → `example.com-IN`
-* Matches against **regex rules**
+* Matches against regex rules
 * If matched → request is **blocked (HTTP 403)**
 
 ---
@@ -237,8 +274,6 @@ sudo systemctl reload haproxy
 ---
 
 ## 📞 Support
-
-For issues or improvements:
 
 * Create a **merge request**
 * Raise an **issue in the repository**
