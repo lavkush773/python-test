@@ -23,17 +23,17 @@ Bash
 AWK
 curl
 unzip
-MaxMind account (for GeoLite2 database)
+MaxMind account
 Installation
-1. Setup Working Directory
+Setup Working Directory
 mkdir -p ~/geoip-updater/temp
 cd ~/geoip-updater
-2. Create Script
+Create Script
 nano update_geoip.sh
 
 Paste your script and save.
 
-3. Set Permissions
+Set Permissions
 chmod +x update_geoip.sh
 MaxMind License Setup
 
@@ -45,18 +45,12 @@ Follow this guide:
 https://www.youtube.com/watch?v=f8QsxwG8sLY
 
 Configure in Script
-
-Open your script:
-
 nano update_geoip.sh
 
-Add these variables:
+Add:
 
 ACCOUNT_ID="Your Account ID"
 LICENSE_KEY="Your MaxMind License Key"
-
-These credentials are used in the script to download the latest GeoLite2 database.
-
 Usage
 Run Script Manually
 ./update_geoip.sh
@@ -124,11 +118,8 @@ Add New Domain
 Reload After Changes
 sudo systemctl reload haproxy
 Support
-
-For issues or improvements:
-
 Create a merge request
 Raise an issue in the repository
 Project Status
 
-Active and production-ready.
+Active and production-ready
