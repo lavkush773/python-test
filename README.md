@@ -1,134 +1,251 @@
-# HAProxy Geofencing & GeoIP Automated Updater
+# 🌍 HAProxy Geofencing & GeoIP Automated Updater
 
-This project provides an automated and scalable solution for managing GeoIP-based traffic control in HAProxy. It allows you to update the MaxMind GeoIP database automatically and implement flexible geo-blocking rules based on domain names and countries.
+## 📖 Description
+
+This project provides an **automated, scalable, and production-ready solution** for GeoIP-based traffic control in HAProxy.
+
+It helps you:
+
+* Update the **GeoIP database (`geoip.map`) automatically**
+* Block traffic based on **domain + country**
+* Use **regex-based rules** for flexible geo-blocking
+* Run everything using **Bash + AWK only (no heavy dependencies)**
+
+This setup is specifically designed for **production environments** where **domain-level geo restrictions** are required.
+
+---
 
 ## 🚀 Features
 
-- **Automated Updates:** Automatically fetches and updates the GeoIP database (`geoip.map`).
-- **Domain-Level Blocking:** Block specific countries for specific domains using regex-based rules.
-- **Scalable & Lightweight:** Written in Bash and AWK; no heavy external dependencies required.
-- **Reliable:** Includes backup support before every update and validates HAProxy configuration before reloading.
-- **IPv4 Optimized:** High-performance processing of CIDR ranges.
+* **Automated GeoIP Updates** – Fetches and updates GeoLite2 database automatically
+* **Domain-Level Blocking** – Block countries per domain using regex
+* **Backup Support** – Automatically backs up old `geoip.map` before update
+* **IPv4 Optimized** – High-performance CIDR processing
+* **Regex-Based Filtering** – Flexible and scalable blocking rules
+* **Lightweight** – No external libraries required
+* **Safe Reload** – Validates HAProxy config before reload
+
+---
 
 ## 📋 Requirements
 
-- **HAProxy** (Version 2.6 or later recommended)
-- **Bash Shell**
-- **AWK**
-- **curl** & **unzip**
-- **MaxMind Account** (Free GeoLite2 database)
+* **HAProxy** (v2.6 or later recommended)
+* **Bash**
+* **AWK**
+* **curl**
+* **unzip**
+* **MaxMind Account** (GeoLite2 database)
+
+---
 
 ## 🛠️ Installation
 
-### 1. Setup Working Directory
-```
+### 1️⃣ Setup Working Directory
+
+```bash
 mkdir -p ~/geoip-updater/temp
-
 cd ~/geoip-updater
+```
 
-2. Create the Update Script
+---
 
-Create a file named update_geoip.sh:
+### 2️⃣ Create Update Script
 
-
+```bash
 nano update_geoip.sh
+```
 
-Paste your update logic into this file and save it.
+Paste your script inside and save it.
 
-3. Set Executable Permissions
+---
 
+### 3️⃣ Set Executable Permission
 
+```bash
 chmod +x update_geoip.sh
+```
 
-🔑 MaxMind License Setup
+---
 
-To download the GeoLite2 database, you need a MaxMind account and a license key.
-Create License Key:
-Sign up at MaxMind.com and generate a license key.
-Configure the Script:
-Open update_geoip.sh and add your credentials:
+## 🔑 MaxMind License Setup
 
+To download the GeoLite2 database, you need a **MaxMind license key**.
 
+### ▶️ Create License Key
+
+Follow this guide:
+https://www.youtube.com/watch?v=f8QsxwG8sLY
+
+---
+
+### ⚙️ Configure in Script
+
+```bash
+nano update_geoip.sh
+```
+
+Add:
+
+```bash
 ACCOUNT_ID="Your_Account_ID"
 LICENSE_KEY="Your_MaxMind_License_Key"
-🚀 Usage
-Manual Update
-Run the script manually to test the setup:
+```
 
+These credentials allow the script to download the latest GeoLite2 database.
 
+---
+
+## 🚀 Usage
+
+### ▶️ Run Manually
+
+```bash
 ./update_geoip.sh
+```
 
-Automation with Cron
-To keep the database updated automatically, add a cron job:
+### ✅ Expected Output
 
+* `geoip.map updated`
+* `HAProxy reloaded successfully`
 
+---
+
+### ⏰ Automate with Cron
+
+```bash
 crontab -e
+```
 
-Add the following line (runs every Wednesday and Saturday at 3:30 AM):
+Example (runs every Wednesday & Saturday at 3:30 AM):
 
-
+```bash
 30 3 * * 3,6 /home/yourusername/geoip-updater/update_geoip.sh >> /home/yourusername/geoip-updater/update.log 2>&1
+```
 
-🛡️ Domain Geo-Blocking Configuration
+---
 
-Step 1: Create Domain Block Map
+## ⚙️ Workflow
 
-Create /etc/haproxy/domain_block.map. This file maps a domain-country combination to a block action (1).
+1. Download latest GeoLite2 CSV
+2. Extract archive
+3. Backup existing `geoip.map`
+4. Process IPv4 data using AWK
+5. Generate new `geoip.map`
+6. Validate HAProxy configuration
+7. Reload HAProxy
+8. Cleanup temporary files
 
-Format: ^domain\.com-(COUNTRY_CODE1|COUNTRY_CODE2)$ 1
+---
 
-Example:
+## 🛡️ Domain Geo-Blocking Setup
 
+### 📁 Required Files
 
+* `/etc/haproxy/geoip.map`
+* `/etc/haproxy/domain_block.map`
+* `/etc/haproxy/haproxy.cfg`
+
+---
+
+### 🔹 Step 1: Create Domain Block Map
+
+```bash
+sudo nano /etc/haproxy/domain_block.map
+```
+
+#### Format
+
+```
+^domain\.com-(COUNTRY1|COUNTRY2)$ 1
+```
+
+#### Example
+
+```
 ^example\.com-(CN|IN|RU|US)$ 1
 ^test\.com-(IN|PK|BD|AF)$ 1
 ^mysite\.in-(US|GB|CN)$ 1
+```
 
-Step 2: Update HAProxy Configuration (haproxy.cfg)
+---
 
-Add the following logic to your frontend:
+### 🔹 Step 2: Update HAProxy Configuration
 
-
+```haproxy
 frontend http_front
     bind *:80
 
-    # 1. Look up the country code from the client IP
+    # Detect country from client IP
     http-request set-var(req.country) src,map_ip(/etc/haproxy/geoip.map)
 
-    # 2. Create a combined string of "host-country"
+    # Combine host + country
     http-request set-var-fmt(txn.host_country) "%[hdr(host),lower]-%[var(req.country)]"
 
-    # 3. Check if this combination exists in the block map using regex
+    # Match against regex rules
     acl is_blocked var(txn.host_country),map_reg(/etc/haproxy/domain_block.map) -m found
 
-    # 4. Deny request if blocked
+    # Deny if matched
     http-request deny deny_status 403 if is_blocked
 
     default_backend http_back
-    
-Step 3: Validate and Reload
+```
 
+---
 
+### 🔹 Step 3: Validate & Reload
+
+```bash
 sudo haproxy -c -f /etc/haproxy/haproxy.cfg
 sudo systemctl reload haproxy
+```
 
-⚙️ Workflow
+---
 
-Download: Fetches the latest GeoLite2 CSV.
-Process: AWK processes IPv4 data into HAProxy's .map format.
-Backup: Saves the old geoip.map.
-Verify: HAProxy checks the new config for errors.
-Reload: HAProxy reloads without dropping connections.
-Cleanup: Removes temporary files.
+## 🧠 How It Works
 
-🛠️ Maintenance
+* HAProxy detects **country from client IP**
+* Combines **domain + country** → `example.com-IN`
+* Matches against **regex rules**
+* If matched → request is **blocked (HTTP 403)**
 
-Add Country: Edit domain_block.map and add to the regex: (CN|IN) → (CN|IN|US).
-Add Domain: Add a new line in domain_block.map for the new domain.
+---
 
-Apply Changes: Run sudo systemctl reload haproxy.
+## 🛠️ Maintenance
 
-📄 Project Status
+### ➕ Add New Country
 
-Status: Active & Production Ready.
-Support: Raise an issue in the repository for bugs or feature requests.
+```
+(CN|IN) → (CN|IN|US)
+```
+
+---
+
+### ➕ Add New Domain
+
+```
+^newdomain\.com-(CN|RU)$ 1
+```
+
+---
+
+### 🔄 Apply Changes
+
+```bash
+sudo systemctl reload haproxy
+```
+
+---
+
+## 📞 Support
+
+For issues or improvements:
+
+* Create a **merge request**
+* Raise an **issue in the repository**
+
+---
+
+## 📄 Project Status
+
+✅ **Active**
+🚀 **Production Ready**
