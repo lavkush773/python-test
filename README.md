@@ -203,6 +203,15 @@ sudo vim /etc/haproxy/domain_block.map
 ^test\.com-(IN|PK|BD|AF)$ 1
 ^mysite\.in-(US|GB|CN)$ 1
 ```
+## 🧠 Regex Basics (Important)
+
+| Symbol | Meaning    | Explanation                                  |                                         |
+| ------ | ---------- | -------------------------------------------- | --------------------------------------- |
+| `^`    | Start      | Matches the beginning of the string          |                                         |
+| `\.`   | Dot Escape | Matches a literal dot (.) in domain names    |                                         |
+| `      | `          | OR                                           | Matches one option from multiple values |
+| `$`    | End        | Matches the end of the string                |                                         |
+| `()`   | Grouping   | Groups multiple values (e.g., country codes) |                                         |
 
 ---
 
