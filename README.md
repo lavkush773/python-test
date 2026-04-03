@@ -54,6 +54,9 @@ cd ~/geoip-updater
 ```bash
 vim update_geoip.sh
 ```
+### 📁 Required Files
+
+* `/geoip_updater/update_geoip.sh `
 
 Paste your script into this file and save it.
 
@@ -205,13 +208,13 @@ sudo vim /etc/haproxy/domain_block.map
 ```
 ## 🧠 Regex Basics (Important)
 
-| Symbol | Meaning    | Explanation                                  |                                         |
-| ------ | ---------- | -------------------------------------------- | --------------------------------------- |
-| `^`    | Start      | Matches the beginning of the string          |                                         |
-| `\.`   | Dot Escape | Matches a literal dot (.) in domain names    |                                         |
-| `      | `          | OR                                           | Matches one option from multiple values |
-| `$`    | End        | Matches the end of the string                |                                         |
-| `()`   | Grouping   | Groups multiple values (e.g., country codes) |                                         |
+| Symbol | Meaning    | Explanation                                  |
+| ------ | ---------- | -------------------------------------------- | 
+| `^`    | Start      | Matches the beginning of the string          |
+| `\.`   | Dot Escape | Matches a literal dot (.) in domain names    |
+|   |    |     OR     |  Matches one option from multiple values     |
+| `$`    | End        | Matches the end of the string                |
+| `()`   | Grouping   | Groups multiple values (e.g., country codes) |
 
 ---
 
